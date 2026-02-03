@@ -1,4 +1,7 @@
-const BASE_URL = "http://localhost:8000";
+import CONFIG from "./config.js";
+import { openProductModal } from "./modal-function.js";
+
+
 let allProducts = [];
 let supermarkets = [];
 let currentCategory = "all";
@@ -15,8 +18,8 @@ if (params.get("sale") === "1") {
 
 async function loadProducts() {
   const [prodRes, supRes] = await Promise.all([
-    apiFetch(`${BASE_URL}/product`),
-    apiFetch(`${BASE_URL}/supermarket`)
+    apiFetch(`${CONFIG.API_BASE_URL}/product`),
+    apiFetch(`${CONFIG.API_BASE_URL}/supermarket`)
   ]);
 
   allProducts = prodRes.ok ? await prodRes.json() : [];
@@ -30,6 +33,19 @@ async function loadProducts() {
 
 
 loadProducts();
+
+document.getElementById("search-input")
+  .addEventListener("input", renderProducts);
+document.getElementById("store-filter")
+  .addEventListener("change", setStoreFilter);
+document.querySelectorAll(".cat-pill").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const cat = btn.dataset.cat;
+    setCategory(cat);
+  });
+});
+
+
 
 function setCategory(cat) {
   currentCategory = cat;
@@ -93,7 +109,7 @@ function renderProducts() {
 
 card.innerHTML = `
   <div class="img-wrapper">
-    <img src="${BASE_URL + p.image}" class="product-img">
+    <img src="${p.image}" class="product-img">
   </div>
 
   <div class="product-info">
@@ -120,12 +136,19 @@ card.innerHTML = `
         `
     }
 
-    <button class="add-btn" onclick="event.stopPropagation(); addToCart(${p.id})">
+    <button class="add-btn" data-id="${p.id}">
       + Lista Spesa
     </button>
 
+
   </div>
 `;
+
+card.querySelector(".add-btn").addEventListener("click", (event) => {
+  event.stopPropagation(); // evita apertura modal
+  addToCart(p.id);
+});
+
 card.addEventListener("click", () => {
   openProductModal(p, supermarket);
 });
@@ -138,7 +161,7 @@ card.addEventListener("click", () => {
 }
 
 async function addToCart(productId) {
-  const res = await apiFetch(`${BASE_URL}/cart`, {
+  const res = await apiFetch(`${CONFIG.API_BASE_URL}/cart`, {
     method: "POST",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token"),

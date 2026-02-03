@@ -1,19 +1,22 @@
+import CONFIG from "./config.js";
+import { openProductModal } from "./modal-function.js";
+
+
 const token = localStorage.getItem("token");
 if (!token) window.location.href = "index.html";
-const BASE_URL = "http://localhost:8000"
 async function loadDashboard() {
   try {
     const [userRes, productsRes, recipesRes, supermarketsRes] = await Promise.all([
-      apiFetch("http://localhost:8000/user", {
+      apiFetch(`${CONFIG.API_BASE_URL}/user`, {
         headers: { Authorization: "Bearer " + token }
       }),
-      apiFetch("http://localhost:8000/product", {
+      apiFetch(`${CONFIG.API_BASE_URL}/product`, {
         headers: { Authorization: "Bearer " + token }
       }),
-      apiFetch("http://localhost:8000/recipe?owner_id=1", {
+      apiFetch(`${CONFIG.API_BASE_URL}/recipe?owner_id=1`, {
         headers: { Authorization: "Bearer " + token }
       }),
-       apiFetch("http://localhost:8000/supermarket", {
+       apiFetch(`${CONFIG.API_BASE_URL}/supermarket`, {
         headers: { Authorization: "Bearer " + token }
         })
     ]);
@@ -62,17 +65,17 @@ function renderOffers(products, supermarkets) {
     const discount = Math.round((1 - newPrice / oldPrice) * 100);
 
     return `
-      <div class="offer-card" onclick="openProductModalFromDashboard(${p.id})">
+      <div class="offer-card" data-id="${p.id}">
 
 
         <div class="offer-img-wrapper">
-          <img src="${BASE_URL + p.image}" class="offer-img">
+          <img src="${p.image}" class="offer-img">
           <div class="discount-badge">-${discount}%</div>
         </div>
 
         <div class="offer-sm">
           <div class="offer-sm-icon">
-            <img src="${BASE_URL + sm.image}" alt="">
+            <img src="${sm.image}" alt="">
           </div>
           <span class="offer-sm-name">${sm.name}</span>
         </div>
@@ -87,6 +90,14 @@ function renderOffers(products, supermarkets) {
       </div>
     `;
   }).join("");
+
+  document.querySelectorAll(".offer-card").forEach(card => {
+  card.addEventListener("click", () => {
+    const id = Number(card.dataset.id);
+    openProductModalFromDashboard(id);
+  });
+});
+
 }
 
 
@@ -137,6 +148,8 @@ function renderQuickActions() {
       <span class="action-label">${a.label}</span>
     </button>
   `).join("");
+
+
 }
 
 
@@ -153,7 +166,7 @@ function renderRecipe(recipes) {
   section.style.display = "block";
 
   card.innerHTML = `
-    <img src="${BASE_URL + r.image}">
+    <img src="${r.image}">
     <div class="recipe-overlay">
       <h3>${r.name}</h3>
       <p>Un primo piatto fresco, veloce e nutriente, perfetto per un pranzo leggero ma gustoso. La unione della cremosità dell avocado con la sapidità del salmone crea un equilibrio perfetto.</p>
@@ -184,6 +197,17 @@ loadDashboard();
 function goToAllOffers() {
   window.location.href = "products.html?sale=1";
 }
+
+document.getElementById("see-all-offers")
+  .addEventListener("click", goToAllOffers);
+
+document.querySelectorAll(".nav-pill").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const tab = btn.dataset.tab;
+    navigate(tab);
+  });
+});
+
 
 function openProductModalFromDashboard(productId) {
   const product = window.__allProducts.find(p => p.id === productId);

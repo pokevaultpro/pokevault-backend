@@ -1,3 +1,5 @@
+import CONFIG from "./config.js";
+
 const form = document.getElementById("register-form");
 const errorBox = document.getElementById("error-box");
 const successBox = document.getElementById("success-box");
@@ -17,7 +19,7 @@ form.addEventListener("submit", async (e) => {
   };
 
   try {
-    const res = await fetch("http://localhost:8000/auth", {
+    const res = await fetch(`${CONFIG.API_BASE_URL}/auth`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

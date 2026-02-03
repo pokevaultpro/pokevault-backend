@@ -37,23 +37,23 @@
 <div class="products-page">
     <h1 class="shopping-title">Prodotti</h1>
 
-<input id="search-input" class="search-bar" type="text" placeholder="Cerca prodotti..." oninput="renderProducts()">
+<input id="search-input" class="search-bar" type="text" placeholder="Cerca prodotti...">
 <div class="store-filter-bar">
-  <select id="store-filter" class="store-select" onchange="setStoreFilter()">
+  <select id="store-filter" class="store-select">
     <option value="all">Tutti i negozi</option>
   </select>
 </div>
 
 <div class="category-bar">
-  <button class="cat-pill active" data-cat="all" onclick="setCategory('all')">All</button>
-  <button class="cat-pill" data-cat="sale" onclick="setCategory('sale')">In Sconto</button>
-  <button class="cat-pill" data-cat="Frutta" onclick="setCategory('Frutta')">Frutta</button>
-  <button class="cat-pill" data-cat="Latticini" onclick="setCategory('Latticini')">Latticini</button>
-  <button class="cat-pill" data-cat="Forno" onclick="setCategory('Forno')">Forno</button>
-  <button class="cat-pill" data-cat="Pesce" onclick="setCategory('Pesce')">Pesce</button>
-  <button class="cat-pill" data-cat="Verdura" onclick="setCategory('Verdura')">Verdura</button>
-  <button class="cat-pill" data-cat="Carne" onclick="setCategory('Carne')">Carne</button>
-  <button class="cat-pill" data-cat="Dispensa" onclick="setCategory('Dispensa')">Dispensa</button>
+  <button class="cat-pill active" data-cat="all">All</button>
+  <button class="cat-pill" data-cat="sale">In Sconto</button>
+  <button class="cat-pill" data-cat="Frutta">Frutta</button>
+  <button class="cat-pill" data-cat="Latticini">Latticini</button>
+  <button class="cat-pill" data-cat="Forno">Forno</button>
+  <button class="cat-pill" data-cat="Pesce">Pesce</button>
+  <button class="cat-pill" data-cat="Verdura">Verdura</button>
+  <button class="cat-pill" data-cat="Carne">Carne</button>
+  <button class="cat-pill" data-cat="Dispensa">Dispensa</button>
 </div>
 
   <div id="products-grid" class="products-grid"></div>
@@ -65,8 +65,8 @@
 
 <script src="js/api.js"></script>
 <script src="js/navbar.js"></script>
-<script src="js/modal-loader.js"></script>
-<script src="js/modal-function.js"></script>
-<script src="js/products.js"></script>
+<script type="module" src="js/modal-loader.js"></script>
+<script type="module" src="js/products.js"></script>
+
 </body>
 </html>

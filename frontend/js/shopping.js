@@ -1,3 +1,6 @@
+import CONFIG from "./config.js";
+import { openProductModal } from "./modal-function.js";
+
 const token = localStorage.getItem("token");
 if (!token) window.location.href = "index.html";
 
@@ -5,29 +8,37 @@ let shoppingList = [];     // cart items
 let products = [];         // full products
 let supermarkets = [];     // full supermarkets
 
-const BASE_URL = "http://localhost:8000";
-
 const totalAllEl = document.getElementById("total-all");
 const totalPendingEl = document.getElementById("total-pending");
+
+document.getElementById("clear-cart-btn")
+  .addEventListener("click", clearCart);
+
+document.getElementById("filter-status")
+  .addEventListener("change", renderList);
+
+document.getElementById("filter-store")
+  .addEventListener("change", renderList);
+
 
 // =========================
 // 1. LOAD DATA FROM BACKEND
 // =========================
 
 async function loadCart() {
-  const res = await apiFetch(`${BASE_URL}/cart`, {
+  const res = await apiFetch(`${CONFIG.API_BASE_URL}/cart`, {
     headers: { "Authorization": "Bearer " + token }
   });
   return res.ok ? res.json() : [];
 }
 
 async function loadProducts() {
-  const res = await apiFetch(`${BASE_URL}/product`);
+  const res = await apiFetch(`${CONFIG.API_BASE_URL}/product`);
   return res.ok ? res.json() : [];
 }
 
 async function loadSupermarkets() {
-  const res = await apiFetch(`${BASE_URL}/supermarket`);
+  const res = await apiFetch(`${CONFIG.API_BASE_URL}/supermarket`);
   return res.ok ? res.json() : [];
 }
 
@@ -77,15 +88,26 @@ function renderList() {
   // =========================
   // 1. FILTRO PER NEGOZIO
   // =========================
-  let filtered = shoppingList.filter(item => {
-    return storeFilter === "all" || item.supermarket.name === storeFilter;
-  });
+// 1. FILTRO PER NEGOZIO
+let filtered = shoppingList.filter(item => {
+  return storeFilter === "all" || item.supermarket.name === storeFilter;
+});
 
-  // =========================
-  // 2. SPLIT PENDING / BOUGHT
-  // =========================
-  let pendingItems = filtered.filter(i => !i.checked);
-  let boughtItems = filtered.filter(i => i.checked);
+// 2. FILTRO PER STATO (MANCAVA!)
+const statusFilter = document.getElementById("filter-status").value;
+
+if (statusFilter === "pending") {
+  filtered = filtered.filter(i => !i.checked);
+}
+
+if (statusFilter === "bought") {
+  filtered = filtered.filter(i => i.checked);
+}
+
+// 3. SPLIT PENDING / BOUGHT (solo per render)
+let pendingItems = filtered.filter(i => !i.checked);
+let boughtItems = filtered.filter(i => i.checked);
+
 
   // =========================
   // 3. ORDINAMENTO
@@ -123,55 +145,88 @@ function renderList() {
     const div = document.createElement("div");
     div.className = "shopping-item" + (item.checked ? " bought" : "");
 
-    div.onclick = () => openProductModal(
-      {
-        ...product,
-        quantity: item.quantity,
-        store: supermarket.name,
-        location: product.location,
-        nutritional: product.nutritional
-      },
-      supermarket
-    );
+    div.addEventListener("click", (event) => {
+      // Se clicchi un elemento con data-action, NON aprire il modal
+      if (event.target.closest("[data-action]")) return;
 
-    div.innerHTML = `
-      <div class="check-circle" onclick="toggleBought(event, ${item.id})">
-        ${item.checked ? "✔" : ""}
-      </div>
+      openProductModal(
+        {
+          ...product,
+          quantity: item.quantity,
+          store: supermarket.name,
+          location: product.location,
+          nutritional: product.nutritional
+        },
+        supermarket
+      );
+    });
 
-      <img src="${BASE_URL + product.image}" class="item-img ${item.checked ? "bought-img" : ""}">
 
-      <div class="item-info">
-        <div class="name ${item.checked ? "bought-text" : ""}">
-          ${product.name}
-          ${hasDiscount ? `<span class="sale-badge">SALE</span>` : ""}
-        </div>
 
-        <div class="unit-line">
-          <span class="unit-price ${hasDiscount ? "discounted-unit" : ""}">
-            ${price.toFixed(2).replace('.', ',')} € / pz
-          </span>
+div.innerHTML = `
+  <div class="check-circle" data-action="toggle" data-id="${item.id}">
+    ${item.checked ? "✔" : ""}
+  </div>
 
-          <span class="store-tag">${supermarket.name}</span>
-        </div>
-      </div>
+  <img src="${product.image}" class="item-img ${item.checked ? "bought-img" : ""}">
 
-      <div class="item-right">
-        <div class="qty-box">
-          <button class="qty-btn" onclick="handleQtyClick(event, ${item.id}, -1)">−</button>
-          <span>${item.quantity}</span>
-          <button class="qty-btn" onclick="handleQtyClick(event, ${item.id}, 1)">+</button>
-        </div>
+  <div class="item-info">
+    <div class="name ${item.checked ? "bought-text" : ""}">
+      ${product.name}
+      ${hasDiscount ? `<span class="sale-badge">SALE</span>` : ""}
+    </div>
 
-        <span class="price ${item.checked ? "bought-price" : ""} ${hasDiscount ? "discounted" : ""}">
-          € ${subtotal.replace('.', ',')}
-        </span>
+    <div class="unit-line">
+      <span class="unit-price ${hasDiscount ? "discounted-unit" : ""}">
+        ${price.toFixed(2).replace('.', ',')} € / pz
+      </span>
 
-        <button class="remove-btn" onclick="handleRemoveClick(event, ${item.id})">
-          <img src="${BASE_URL}/static/icons/trash.svg" class="trash-icon">
-        </button>
-      </div>
-    `;
+      <span class="store-tag">${supermarket.name}</span>
+    </div>
+  </div>
+
+  <div class="item-right">
+<div class="qty-box">
+  <button class="qty-btn" data-action="qty" data-delta="-1" data-id="${item.id}">−</button>
+  <span>${item.quantity}</span>
+  <button class="qty-btn" data-action="qty" data-delta="1" data-id="${item.id}">+</button>
+</div>
+
+
+    <span class="price ${item.checked ? "bought-price" : ""} ${hasDiscount ? "discounted" : ""}">
+      € ${subtotal.replace('.', ',')}
+    </span>
+
+    <button class="remove-btn" data-action="remove" data-id="${item.id}">
+      <img src="static/icons/trash.svg" class="trash-icon">
+    </button>
+  </div>
+`;
+
+
+        div.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-action]");
+      if (!target) return;
+
+      const id = Number(target.dataset.id);
+
+      if (target.dataset.action === "toggle") {
+        event.stopPropagation();
+        toggleBought(event, id);
+      }
+
+      if (target.dataset.action === "qty") {
+        event.stopPropagation();
+        const delta = Number(target.dataset.delta);
+        handleQtyClick(event, id, delta);
+      }
+
+      if (target.dataset.action === "remove") {
+        event.stopPropagation();
+        handleRemoveClick(event, id);
+      }
+    });
+
 
     if (item.checked) boughtEl.appendChild(div);
     else listEl.appendChild(div);
@@ -217,7 +272,7 @@ async function updateQty(id, delta) {
 
   const newQty = Math.max(1, item.quantity + delta);
 
-  await apiFetch(`${BASE_URL}/cart/${id}`, {
+  await apiFetch(`${CONFIG.API_BASE_URL}/cart/${id}`, {
     method: "PUT",
     headers: {
       "Authorization": "Bearer " + token,
@@ -241,7 +296,7 @@ async function handleRemoveClick(event, id) {
 }
 
 async function removeItem(id) {
-  await apiFetch(`${BASE_URL}/cart/${id}`, {
+  await apiFetch(`${CONFIG.API_BASE_URL}/cart/${id}`, {
     method: "DELETE",
     headers: { "Authorization": "Bearer " + token }
   });
@@ -264,7 +319,7 @@ async function toggleBought(event, id) {
 
   const newValue = !item.checked;
 
-  await apiFetch(`${BASE_URL}/cart/${id}`, {
+  await apiFetch(`${CONFIG.API_BASE_URL}/cart/${id}`, {
     method: "PUT",
     headers: {
       "Authorization": "Bearer " + token,
@@ -336,9 +391,10 @@ function populateStoreFilter() {
 // =========================
 
 async function clearCart() {
+
   if (!confirm("Vuoi davvero svuotare tutto il carrello?")) return;
 
-  await apiFetch(`${BASE_URL}/cart`, {
+  await apiFetch(`${CONFIG.API_BASE_URL}/cart`, {
     method: "DELETE",
     headers: { "Authorization": "Bearer " + token }
   });

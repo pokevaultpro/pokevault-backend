@@ -1,3 +1,5 @@
+import CONFIG from "./config.js";
+
 const form = document.getElementById("login-form");
 const errorBox = document.getElementById("error-box");
 
@@ -9,7 +11,7 @@ form.addEventListener("submit", async (e) => {
   const password = document.getElementById("password").value.trim();
 
   try {
-    const res = await fetch("http://localhost:8000/auth/token", {
+    const res = await fetch(`${CONFIG.API_BASE_URL}/auth/token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"

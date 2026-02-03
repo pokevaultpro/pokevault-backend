@@ -1,6 +1,7 @@
-function openProductModal(item, supermarket) {
+export function openProductModal(item, supermarket) {
+
   // ===== IMMAGINE E INFO BASE =====
-  document.getElementById("modal-image").src = "http://localhost:8000" + item.image;
+  document.getElementById("modal-image").src = item.image;
   document.getElementById("modal-category").textContent = item.category || "Prodotto";
   document.getElementById("modal-name").textContent = item.name;
 
@@ -53,6 +54,7 @@ function openProductModal(item, supermarket) {
   document.getElementById("product-modal").classList.remove("hidden");
 }
 
-function closeModal() {
+export function closeModal() {
   document.getElementById("product-modal").classList.add("hidden");
 }
+

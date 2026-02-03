@@ -42,19 +42,19 @@
 <div class="top-bar">
   <h1 class="shopping-title">Lista Spesa</h1>
 
-  <button class="clear-cart-btn" onclick="clearCart()">
-    <img src="http://localhost:8000/static/icons/trash.svg" class="clear-cart-icon">
+    <button class="clear-cart-btn" id="clear-cart-btn">
+    <img src="static/icons/trash.svg" class="clear-cart-icon">
   </button>
 </div>
 
         <div class="filters-row">
-          <select id="filter-status" onchange="renderList()">
+          <select id="filter-status">
             <option value="all">Tutti</option>
             <option value="pending">Da acquistare</option>
             <option value="bought">Acquistati</option>
           </select>
 
-          <select id="filter-store" onchange="renderList()">
+          <select id="filter-store">
             <option value="all">Tutti i negozi</option>
           </select>
         </div>
@@ -81,10 +81,10 @@
         </div>
     </div>
 
-    <script src="js/modal-loader.js"></script>
-    <script src="js/modal-function.js"></script>
     <script src="js/api.js"></script>
-    <script src="js/shopping.js"></script>
+    <script type="module" src="js/modal-loader.js"></script>
+    <script type="module" src="js/shopping.js"></script>
     <script src="js/navbar.js"></script>
+
 </body>
 </html>

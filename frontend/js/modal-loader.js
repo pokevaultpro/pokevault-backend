@@ -1,11 +1,9 @@
-// =========================
-// INJECT MODAL HTML
-// =========================
+import { closeModal } from "./modal-function.js";
 
 (function injectModal() {
   const modalHTML = `
 <div id="product-modal" class="modal hidden">
-  <div class="modal-backdrop" onclick="closeModal()"></div>
+  <div class="modal-backdrop" id="modal-backdrop"></div>
 
 <div class="modal-content">
     <div id="modal-discount-badge" class="discount-badge hidden"></div>
@@ -47,11 +45,18 @@
         <div class="nutrition-grid" id="modal-nutrition-grid"></div>
       </div>
 
-      <button class="modal-close" onclick="closeModal()">Chiudi</button>
+      <button class="modal-close" id="modal-close-btn">Chiudi</button>
     </div>
   </div>
 </div>
 `;
 
   document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+  document.getElementById("modal-backdrop")
+  .addEventListener("click", closeModal);
+
+document.getElementById("modal-close-btn")
+  .addEventListener("click", closeModal);
+
 })();
