@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Account - SmartGrocery</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo-box">
+      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      </svg>
+    </div>
+
+    <h1 class="title">Create Account</h1>
+    <p class="subtitle">Join SmartGrocery and start organizing your groceries</p>
+
+    <form id="register-form" class="form">
+      <div id="error-box" class="error hidden"></div>
+      <div id="success-box" class="success hidden"></div>
+
+      <label>Username</label>
+      <input type="text" id="username" placeholder="your_username" required>
+
+      <label>Email</label>
+      <input type="email" id="email" placeholder="you@example.com" required>
+
+      <label>First Name</label>
+      <input type="text" id="first_name" placeholder="John" required>
+
+      <label>Last Name</label>
+      <input type="text" id="last_name" placeholder="Doe" required>
+
+      <label>Password</label>
+      <input type="password" id="password" placeholder="••••••••" required>
+
+      <button type="submit" class="btn">Create Account</button>
+
+      <div class="footer">
+        <button type="button" id="login-btn" class="link">Already have an account? Log in</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="register.js"></script>
+</body>
+</html>

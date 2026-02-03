@@ -1,0 +1,93 @@
+/* Sfondo generale */
+body {
+    margin: 0;
+    padding: 0;
+    background: #f5f7fa;
+    font-family: "Inter", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Contenitore della card */
+.login-card {
+    background: white;
+    width: 380px;
+    padding: 40px 35px;
+    border-radius: 14px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* Titolo */
+.login-card h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+    color: #222;
+}
+
+/* Sottotitolo */
+.login-card p {
+    margin-top: 8px;
+    margin-bottom: 25px;
+    color: #666;
+    font-size: 15px;
+}
+
+/* Input */
+.login-card input {
+    width: 100%;
+    padding: 12px 14px;
+    margin-top: 12px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.2s;
+}
+
+.login-card input:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+/* Bottone */
+.login-card button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 22px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.login-card button:hover {
+    background: #43a047;
+}
+
+/* Link */
+.login-card a {
+    display: block;
+    margin-top: 18px;
+    text-align: center;
+    color: #4caf50;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.login-card a:hover {
+    text-decoration: underline;
+}
+
+/* Hint */
+.hint {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #999;
+    text-align: center;
+}

@@ -1,0 +1,221 @@
+body {
+    background: #f5f7fa;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.page {
+    animation: slide-in 0.3s ease;
+    padding: 20px;
+}
+
+@keyframes slide-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #111827;
+    margin-bottom: 20px;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.supermarket-card {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.supermarket-card:hover {
+    transform: translateY(-4px);
+    border-color: #22c55e;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+
+.supermarket-card h3 {
+    font-family: "Poppins", Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.supermarket-card p {
+    font-family: "Poppins", Arial, sans-serif;
+    font-size: 14px;
+    color: #475569;
+}
+
+
+.supermarket-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #f3f4f6;
+}
+
+.supermarket-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.sm-header {
+    background: white;
+    padding: 28px;
+    border-radius: 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 28px;
+    transition: all 0.2s ease;
+}
+
+.sm-header img {
+    width: 120px;
+    height: 120px;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
+.supermarket-card h3,
+.supermarket-card p,
+.sm-header,
+.product-card,
+.back-btn {
+    font-family: "Nunito Sans", sans-serif;
+}
+
+
+
+.subtitle {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+}
+
+.product-card {
+    position: relative;
+    background: white;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+.discount-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #b91c1c;
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 8px;
+}
+
+.product-card .discounted {
+    color: #b91c1c;
+    text-decoration: line-through;
+    margin-right: 6px;
+}
+
+.product-card .final-price {
+    color: #14532d;
+    font-weight: 700;
+}
+
+
+.product-card .price {
+    font-size: 14px;
+    font-weight: 700;
+    color: #166534; /* verde */
+}
+
+
+.product-card img {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 14px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.product-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.product-card p {
+    font-size: 13px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e5e7eb;
+    padding: 6px 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    cursor: pointer;
+    margin-bottom: 18px;
+    margin-top: 10px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #22c55e;
+    color: white;
+}
+
+.back-btn svg {
+    width: 14px;
+    height: 14px;
+}
+

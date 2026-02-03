@@ -1,0 +1,57 @@
+// =========================
+// INJECT MODAL HTML
+// =========================
+
+(function injectModal() {
+  const modalHTML = `
+<div id="product-modal" class="modal hidden">
+  <div class="modal-backdrop" onclick="closeModal()"></div>
+
+<div class="modal-content">
+    <div id="modal-discount-badge" class="discount-badge hidden"></div>
+    <img id="modal-image" class="modal-img">
+
+
+    <div class="modal-body">
+      <span id="modal-category" class="modal-tag"></span>
+      <h2 id="modal-name" class="modal-title"></h2>
+      <div class="modal-price" id="modal-price"></div>
+
+      <div class="modal-sections">
+        <div class="modal-section">
+          <div class="modal-section-title">
+            <svg class="modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 7h18M3 12h18M3 17h18" />
+            </svg>
+            Negozio
+          </div>
+          <div class="modal-section-value" id="modal-store"></div>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-section-title">
+            <svg class="modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" />
+              <circle cx="12" cy="11" r="3" />
+            </svg>
+            Posizione
+          </div>
+          <div class="modal-section-value" id="modal-location"></div>
+        </div>
+      </div>
+
+      <div class="modal-nutrition">
+        <h3 class="nutrition-title">Valori Nutrizionali (per 100g)</h3>
+        <div class="nutrition-grid" id="modal-nutrition-grid"></div>
+      </div>
+
+      <button class="modal-close" onclick="closeModal()">Chiudi</button>
+    </div>
+  </div>
+</div>
+`;
+
+  document.body.insertAdjacentHTML("beforeend", modalHTML);
+})();

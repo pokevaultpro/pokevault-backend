@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartGrocery - Dashboard</title>
+    <link rel="stylesheet" href="navbar.css">
+  <link rel="stylesheet" href="products.css">
+      <link rel="stylesheet" href="utils/modal.css">
+</head>
+<body data-page="products">
+<header class="top-header">
+  <div class="header-inner">
+
+    <div class="header-left">
+      <div class="logo-icon">
+        <svg class="cart-svg" viewBox="0 0 24 24" fill="none" stroke="white">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M2.5 3h2l1.6 9.5a2 2 0 002 1.7h8.4a2 2 0 001.9-1.4l2.1-6.8H6.1" />
+          <circle cx="9" cy="19" r="1.5" />
+          <circle cx="17" cy="19" r="1.5" />
+        </svg>
+      </div>
+      <span class="header-logo">SmartGrocery</span>
+    </div>
+
+    <nav class="header-right">
+      <button class="nav-pill" data-tab="home" onclick="navigate('home')">Home</button>
+      <button class="nav-pill" data-tab="list" onclick="navigate('list')">List</button>
+      <button class="nav-pill" data-tab="products" onclick="navigate('products')">Prodotti</button>
+      <button class="nav-pill" data-tab="recipes" onclick="navigate('recipes')">Ricette</button>
+      <button class="nav-pill" data-tab="supermarkets" onclick="navigate('supermarkets')">Negozi</button>
+      <button class="nav-pill" data-tab="profile" onclick="navigate('profile')">Profilo</button>
+    </nav>
+
+  </div>
+</header>
+<div class="products-page">
+    <h1 class="shopping-title">Prodotti</h1>
+
+<input id="search-input" class="search-bar" type="text" placeholder="Cerca prodotti..." oninput="renderProducts()">
+<div class="store-filter-bar">
+  <select id="store-filter" class="store-select" onchange="setStoreFilter()">
+    <option value="all">Tutti i negozi</option>
+  </select>
+</div>
+
+<div class="category-bar">
+  <button class="cat-pill active" data-cat="all" onclick="setCategory('all')">All</button>
+  <button class="cat-pill" data-cat="sale" onclick="setCategory('sale')">In Sconto</button>
+  <button class="cat-pill" data-cat="Frutta" onclick="setCategory('Frutta')">Frutta</button>
+  <button class="cat-pill" data-cat="Latticini" onclick="setCategory('Latticini')">Latticini</button>
+  <button class="cat-pill" data-cat="Forno" onclick="setCategory('Forno')">Forno</button>
+  <button class="cat-pill" data-cat="Pesce" onclick="setCategory('Pesce')">Pesce</button>
+  <button class="cat-pill" data-cat="Verdura" onclick="setCategory('Verdura')">Verdura</button>
+  <button class="cat-pill" data-cat="Carne" onclick="setCategory('Carne')">Carne</button>
+  <button class="cat-pill" data-cat="Dispensa" onclick="setCategory('Dispensa')">Dispensa</button>
+</div>
+
+  <div id="products-grid" class="products-grid"></div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+
+<script src="utils/api.js"></script>
+<script src="navbar.js"></script>
+<script src="utils/modal-loader.js"></script>
+<script src="utils/modal-function.js"></script>
+<script src="products.js"></script>
+</body>
+</html>

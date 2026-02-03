@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartGrocery - Dashboard</title>
+    <link rel="stylesheet" href="navbar.css">
+  <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="utils/modal.css">
+</head>
+<body data-page="home">
+<header class="top-header">
+  <div class="header-inner">
+
+    <div class="header-left">
+      <div class="logo-icon">
+        <svg class="cart-svg" viewBox="0 0 24 24" fill="none" stroke="white">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M2.5 3h2l1.6 9.5a2 2 0 002 1.7h8.4a2 2 0 001.9-1.4l2.1-6.8H6.1" />
+          <circle cx="9" cy="19" r="1.5" />
+          <circle cx="17" cy="19" r="1.5" />
+        </svg>
+      </div>
+      <span class="header-logo">SmartGrocery</span>
+    </div>
+
+    <nav class="header-right">
+      <button class="nav-pill" data-tab="home" onclick="navigate('home')">Home</button>
+      <button class="nav-pill" data-tab="list" onclick="navigate('list')">List</button>
+      <button class="nav-pill" data-tab="products" onclick="navigate('products')">Prodotti</button>
+      <button class="nav-pill" data-tab="recipes" onclick="navigate('recipes')">Ricette</button>
+      <button class="nav-pill" data-tab="supermarkets" onclick="navigate('supermarkets')">Negozi</button>
+      <button class="nav-pill" data-tab="profile" onclick="navigate('profile')">Profilo</button>
+    </nav>
+
+  </div>
+</header>
+
+
+
+
+  <div class="dashboard-container">
+
+    <header class="header">
+      <div>
+        <h1 id="user-greeting" class="header-title"></h1>
+        <p class="header-subtitle">Pronto per la spesa intelligente?</p>
+      </div>
+      <div id="user-avatar" class="avatar"></div>
+    </header>
+
+    <!-- Offerte -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title"><span class="fire">🔥</span> Offerte del Momento</h2>
+        <button class="see-all-btn" onclick="goToAllOffers()">Vedi tutto</button>
+      </div>
+
+      <div id="offers" class="offers-list"></div>
+    </section>
+
+    <!-- Accesso Rapido -->
+    <section class="section">
+      <h2 class="section-title">Accesso Rapido</h2>
+      <div class="quick-actions" id="quick-actions"></div>
+    </section>
+
+    <!-- Ricetta del Giorno -->
+    <section class="section" id="recipe-section">
+      <div class="section-header">
+        <h2 class="section-title">Ricetta del Giorno</h2>
+        <button class="link-btn" id="view-recipes">Scopri ricette</button>
+      </div>
+
+      <div id="recipe-card" class="recipe-card"></div>
+    </section>
+
+  </div>
+
+  <script src="utils/api.js"></script>
+  <script src="dashboard.js"></script>
+  <script src="navbar.js"></script>
+  <script src="utils/modal-loader.js"></script>
+  <script src="utils/modal-function.js"></script>
+</body>
+</html>

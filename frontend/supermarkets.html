@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Supermercati</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="navbar.css">
+        <link rel="stylesheet" href="utils/modal.css">
+    <link rel="stylesheet" href="supermarkets.css">
+</head>
+
+<body data-page="supermarkets">
+
+<header class="top-header">
+  <div class="header-inner">
+
+    <div class="header-left">
+      <div class="logo-icon">
+        <svg class="cart-svg" viewBox="0 0 24 24" fill="none" stroke="white">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M2.5 3h2l1.6 9.5a2 2 0 002 1.7h8.4a2 2 0 001.9-1.4l2.1-6.8H6.1" />
+          <circle cx="9" cy="19" r="1.5" />
+          <circle cx="17" cy="19" r="1.5" />
+        </svg>
+      </div>
+      <span class="header-logo">SmartGrocery</span>
+    </div>
+
+    <nav class="header-right">
+      <button class="nav-pill" data-tab="home" onclick="navigate('home')">Home</button>
+      <button class="nav-pill" data-tab="list" onclick="navigate('list')">List</button>
+      <button class="nav-pill" data-tab="products" onclick="navigate('products')">Prodotti</button>
+      <button class="nav-pill" data-tab="recipes" onclick="navigate('recipes')">Ricette</button>
+      <button class="nav-pill" data-tab="supermarkets" onclick="navigate('supermarkets')">Negozi</button>
+      <button class="nav-pill" data-tab="profile" onclick="navigate('profile')">Profilo</button>
+    </nav>
+
+  </div>
+</header>
+
+
+
+
+<!-- ===== CONTENUTO PAGINA ===== -->
+
+<div id="supermarkets-page" class="page hidden">
+    <h1 class="title">Supermercati</h1>
+    <div id="supermarket-list" class="list"></div>
+</div>
+
+<div id="supermarket-details" class="page hidden">
+    <button id="back-btn" class="back-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 19l-7-7 7-7" />
+        </svg>
+        Torna ai Supermercati
+    </button>
+
+
+    <div id="sm-header" class="sm-header"></div>
+
+    <h2 class="subtitle">Prodotti Disponibili</h2>
+    <div id="products-grid" class="products-grid"></div>
+</div>
+<div id="modal-root"></div>
+
+    <script src="utils/modal-loader.js"></script>
+    <script src="utils/modal-function.js"></script>
+    <script src="utils/api.js"></script>
+    <script src="navbar.js"></script>
+    <script src="supermarkets.js"></script>
+</body>
+</html>
