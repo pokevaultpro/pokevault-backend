@@ -55,13 +55,13 @@ async def get_supermarket_by_id(user: user_dependency, db: db_dependency, superm
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def create_supermarket(user: user_dependency, db: db_dependency, request: SupermarketRequest):
-    normalized_name = request.name.strip().lower().capitalize()
-    existing = db.query(Supermarkets).filter(func.lower(Supermarkets.name).capitalize() == normalized_name).first()
+    normalized_name = request.name.strip().lower()
+    existing = db.query(Supermarkets).filter(func.lower(Supermarkets.name) == normalized_name).first()
     if existing:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="Supermarket with this name already exists")
     data = request.model_dump()
-    data['name'] = normalized_name
+    data['name'] = normalized_name.capitalize()
     supermarket_model = Supermarkets(**data)
     db.add(supermarket_model)
     db.commit()
