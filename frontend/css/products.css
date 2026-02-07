@@ -14,6 +14,7 @@
   font-family: "Inter", system-ui, -apple-system, sans-serif;
 }
 
+
 body {
   background: #fafafa;
   color: #222;
@@ -322,4 +323,9 @@ body {
   outline: none;
   border-color: #2ecc71;
   box-shadow: 0 0 0 3px rgba(46,204,113,0.25);
+}
+@media (max-width: 768px) {
+.products-page {
+  padding-bottom: 100px; /* spazio per la bottom bar */
+}
 }

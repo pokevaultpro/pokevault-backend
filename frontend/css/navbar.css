@@ -84,3 +84,45 @@
   background: #22c55e;
   color: white;
 }
+
+@media (max-width: 768px) {
+
+  .header-inner {
+    justify-content: center; /* centra tutto */
+    height: 70px; /* un po' più alto */
+  }
+
+  .header-left {
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .header-logo {
+    font-size: 25px; /* prima 20 → ora più leggibile */
+    font-weight: 900;
+    }
+
+  /* avatar più grande e spostato a destra */
+  #user-avatar {
+    position: absolute;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .cart-svg {
+  width: 26px;
+  height: 26px;
+  stroke: white;
+}
+
+  /* nascondi i pulsanti della navbar */
+  .header-right {
+    display: none;
+  }
+}

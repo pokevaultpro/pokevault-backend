@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SmartGrocery - Dashboard</title>
     <link rel="stylesheet" href="css/navbar.css">
   <link rel="stylesheet" href="css/dashboard.css">
@@ -59,7 +60,7 @@
     </section>
 
     <!-- Accesso Rapido -->
-    <section class="section">
+    <section class="section" id="fast-access">
       <h2 class="section-title">Accesso Rapido</h2>
       <div class="quick-actions" id="quick-actions"></div>
     </section>
@@ -75,6 +76,22 @@
     </section>
 
   </div>
+
+    <div id="bottom-bar-container"></div>
+    <script>
+fetch("bottom-bar.html")
+  .then(r => r.text())
+  .then(html => {
+    document.getElementById("bottom-bar-container").innerHTML = html;
+
+    const script = document.createElement("script");
+    script.type = "module";
+    script.src = "js/quick-actions.js";
+    document.body.appendChild(script);
+  });
+
+    </script>
+
 
   <script src="js/api.js"></script>
   <script type="module" src="js/modal-loader.js"></script>
