@@ -3,10 +3,12 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from typing import Annotated, Optional
 from starlette import status
+from datetime import datetime
 
 from app.database import SessionLocal
+from app.routers import shopping_history_item
 from app.routers.auth import get_current_user
-from app.models import Cart, Products, Supermarkets
+from app.models import Cart, Products, Supermarkets, ShoppingHistory, ShoppingHistoryItem
 
 router = APIRouter(
     prefix="/cart",
@@ -76,6 +78,59 @@ async def create_cart(user: user_dependency, db: db_dependency, cart_request: Ca
     db.commit()
     db.refresh(cart)
     return cart
+
+@router.post("/finalize", status_code=status.HTTP_201_CREATED)
+async def create_shopping_history(user: user_dependency, db: db_dependency):
+    owner_id = user.get("id")
+    cart_model = db.query(Cart).filter(Cart.owner_id == owner_id).filter(Cart.checked == True).all()
+    if not cart_model:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="The cart is empty!")
+    created_at = datetime.utcnow().isoformat()
+    total_items = sum(item.quantity for item in cart_model)
+    total_price = sum((item.product.discounted_price or item.product.original_price)
+                                     * item.quantity for item in cart_model)
+    shopping_history_model = ShoppingHistory(total_items=total_items, total_price=total_price,
+                                             user_id=owner_id, created_at=created_at)
+    db.add(shopping_history_model)
+    db.commit()
+    db.refresh(shopping_history_model)
+
+    for item in cart_model:
+        product = item.product
+        price_paid = product.discounted_price or product.original_price
+        was_discounted = True if product.discounted_price else False
+
+        shopping_history_item_model = ShoppingHistoryItem(
+            history_id=shopping_history_model.id,
+            product_id=product.id,
+            name=product.name,
+            image=product.image,
+            unit=product.unit,
+            price_paid=price_paid,
+            was_discounted=was_discounted,
+            quantity = item.quantity,
+            category=product.category,
+            aisle_order = product.aisle_order,
+            supermarket_id = product.supermarket_id,
+            supermarket_name = product.supermarket.name,
+            calories = product.calories,
+            fat = product.fat,
+            carbs = product.carbs,
+            protein = product.protein,
+        )
+        db.add(shopping_history_item_model)
+    db.commit()
+
+
+    db.query(Cart).filter(Cart.owner_id == owner_id).filter(Cart.checked == True).delete()
+    db.commit()
+
+    return {
+        "message": "Spesa finalizzata con successo",
+        "finalized_items": len(cart_model),
+        "history_id": shopping_history_model.id
+    }
+
 
 @router.put("/{cart_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_cart(user: user_dependency, db: db_dependency, cart_update: CartUpdate, cart_id: int = Path(gt=0)):

@@ -109,40 +109,58 @@ function renderProducts() {
 
 card.innerHTML = `
   <div class="img-wrapper">
-    <img src="${p.image}" class="product-img">
+    ${hasDiscount ? `
+      <div class="discount-badge">
+        -${Math.round((1 - p.discounted_price / p.original_price) * 100)}%
+      </div>` : ""
+    }
+
+    <img loading="lazy"
+         src="${p.image}"
+         class="product-img"
+         onerror="this.src='/static/images/placeholder.jpg'">
   </div>
 
   <div class="product-info">
 
+    <!-- Nome prodotto -->
     <div class="product-name">${p.name}</div>
 
-    <div class="product-supermarket-tag">
-      ${supermarket ? supermarket.name : ""}
+    <!-- Brand + Categoria -->
+    <div class="product-meta-row">
+      <span class="product-brand">${supermarketName}</span>
+      <span class="product-category">${p.category}</span>
     </div>
 
-    ${
-      hasDiscount
-        ? `
-          <div class="price-row">
+    <!-- Nutritional preview -->
+    <div class="nutri-row">
+      ${p.calories ? `<span class="nutri-badge">CAL ${p.calories}</span>` : ""}
+      ${p.protein ? `<span class="nutri-badge">PROT ${p.protein}g</span>` : ""}
+    </div>
+
+    <!-- Prezzo -->
+    <div class="price-row">
+      ${
+        hasDiscount
+          ? `
             <span class="old-price">€ ${p.original_price.toFixed(2).replace(".", ",")}</span>
             <span class="new-price">€ ${p.discounted_price.toFixed(2).replace(".", ",")}</span>
-            <span class="discount-tag">-${Math.round((1 - p.discounted_price / p.original_price) * 100)}%</span>
-          </div>
-        `
-        : `
-          <div class="price-row">
+          `
+          : `
             <span class="regular-price">€ ${p.original_price.toFixed(2).replace(".", ",")}</span>
-          </div>
-        `
-    }
+          `
+      }
+      <span class="unit-tag">/ ${p.unit || "pz"}</span>
+    </div>
 
+    <!-- Pulsante -->
     <button class="add-btn" data-id="${p.id}">
-      + Lista Spesa
+      + Aggiungi
     </button>
-
 
   </div>
 `;
+
 
 card.querySelector(".add-btn").addEventListener("click", (event) => {
   event.stopPropagation(); // evita apertura modal

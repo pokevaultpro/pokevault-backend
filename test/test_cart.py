@@ -1,5 +1,7 @@
 from starlette import status
+from datetime import datetime, timedelta
 
+from app.models import ShoppingHistory, ShoppingHistoryItem
 from test.utils import *
 from app.routers.cart import get_db, get_current_user
 from app.main import app
@@ -64,6 +66,31 @@ def test_create_cart_product_not_found(test_cart):
 
     db = TestingSessionLocal()
     cart_model = db.query(Cart).filter(Cart.product_id == 9999).first()
+    assert cart_model is None
+
+def test_create_shopping_history(test_cart):
+    response = client.post('/cart/finalize')
+    assert response.status_code == status.HTTP_201_CREATED
+    db = TestingSessionLocal()
+    shopping_history_model = db.query(ShoppingHistory).filter(ShoppingHistory.id == 1).first()
+    assert shopping_history_model is not None
+
+    created_at = datetime.fromisoformat(shopping_history_model.created_at)
+    now = datetime.now()
+
+    assert now - created_at < timedelta(seconds=5)
+    assert shopping_history_model.total_items == 2
+    assert shopping_history_model.total_price == 1.24
+    assert shopping_history_model.user_id == 1
+
+    shopping_history_item_model = db.query(ShoppingHistoryItem).filter(ShoppingHistoryItem.id == 1).first()
+    assert shopping_history_item_model is not None
+    assert shopping_history_item_model.id == 1
+    assert shopping_history_item_model.product_id == 1
+    assert shopping_history_item_model.supermarket_id == 1
+    assert shopping_history_item_model.supermarket_name == "Conad"
+
+    cart_model = db.query(Cart).filter(Cart.id == 1).first()
     assert cart_model is None
 
 def test_update_all_cart(test_cart):

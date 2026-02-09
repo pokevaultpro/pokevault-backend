@@ -6,7 +6,8 @@ from passlib.context import CryptContext
 
 from app.database import Base
 from app.main import app
-from app.models import Products, Supermarkets, Recipes, RecipeItems, Cart, Users
+from app.models import (Products, Supermarkets, Recipes, RecipeItems, Cart,
+                        Users, ShoppingHistory, ShoppingHistoryItem)
 
 SQLALCHEMY_DATABASE_URL = "sqlite://"
 
@@ -182,3 +183,66 @@ def test_user():
     with engine.connect() as connection:
         connection.execute(text("DELETE FROM users;"))
         connection.commit()
+
+@pytest.fixture
+def test_shopping_history(test_user):
+    history1 = ShoppingHistory(
+        user_id=1,
+        total_items=3,
+        total_price=5.50,
+        created_at="2024-01-01T10:00:00"
+    )
+    history2 = ShoppingHistory(
+        user_id=1,
+        total_items=1,
+        total_price=2.00,
+        created_at="2024-01-02T10:00:00"
+    )
+    db = TestingSessionLocal()
+    db.add(history1)
+    db.add(history2)
+    db.commit()
+    yield [history1, history2]
+    with engine.connect() as connection:
+        connection.execute(text("DELETE FROM shopping_history;"))
+        connection.commit()
+
+@pytest.fixture
+def test_shopping_history_item(test_shopping_history, test_product):
+    history_item1 = ShoppingHistoryItem(
+        history_id=1,
+        product_id=1,
+        name="Onion",
+        price_paid=0.62,
+        was_discounted=False,
+        supermarket_id=1,
+        supermarket_name="Conad",
+        aisle_order=3.2,
+        unit = "pz",
+        category="Frutta",
+        image="static/images/products/onion.png",
+        quantity=3
+    )
+    history_item2 = ShoppingHistoryItem(
+        history_id=1,
+        product_id=2,
+        name="Garlic",
+        price_paid=0.88,
+        was_discounted=False,
+        supermarket_id=2,
+        supermarket_name="Lidl",
+        aisle_order=2.5,
+        unit = "100g",
+        category="Verdura",
+        image="static/images/products/garlic.png",
+        quantity=5
+    )
+    db = TestingSessionLocal()
+    db.add(history_item1)
+    db.add(history_item2)
+    db.commit()
+    yield [history_item1, history_item2]
+    with engine.connect() as connection:
+        connection.execute(text("DELETE FROM shopping_history_items;"))
+        connection.commit()
+

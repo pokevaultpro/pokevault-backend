@@ -77,3 +77,46 @@ class Cart(Base):
     checked = Column(Boolean, default=False)
     product = relationship("Products", back_populates="cart_items")
     owner = relationship("Users", back_populates="cart_items")
+
+class ShoppingHistory(Base):
+    __tablename__ = "shopping_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, nullable=False)
+    created_at = Column(String, nullable=False)
+    total_price = Column(Float, nullable=False)
+    total_items = Column(Integer, nullable=False)
+
+    # relazione con gli item
+    items = relationship("ShoppingHistoryItem", back_populates="history", cascade="all, delete")
+
+class ShoppingHistoryItem(Base):
+    __tablename__ = "shopping_history_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    history_id = Column(Integer, ForeignKey("shopping_history.id"), nullable=False)
+
+    product_id = Column(Integer, nullable=True)
+
+    name = Column(String, nullable=False)
+    image = Column(String, nullable=True)
+    unit = Column(String, nullable=True)
+
+    price_paid = Column(Float, nullable=False)
+    was_discounted = Column(Boolean, default=False)
+
+    quantity = Column(Integer, default=1)
+
+    category = Column(String, nullable=True)
+    aisle_order = Column(Float, nullable=True)
+
+    supermarket_id = Column(Integer, nullable=True)
+    supermarket_name = Column(String, nullable=True)
+
+    calories = Column(Float, nullable=True)
+    fat = Column(Float, nullable=True)
+    carbs = Column(Float, nullable=True)
+    protein = Column(Float, nullable=True)
+
+    # relazione inversa
+    history = relationship("ShoppingHistory", back_populates="items")

@@ -8,8 +8,9 @@ let shoppingList = [];     // cart items
 let products = [];         // full products
 let supermarkets = [];     // full supermarkets
 
-const totalAllEl = document.getElementById("total-all");
-const totalPendingEl = document.getElementById("total-pending");
+const totalAllEl = document.getElementById("total-budget");
+const totalPendingEl = document.getElementById("total-remaining");
+
 
 document.getElementById("clear-cart-btn")
   .addEventListener("click", clearCart);
@@ -234,6 +235,8 @@ div.innerHTML = `
 
   updateTotals();
   updateSectionVisibility();
+  updateSelectAllButtonState();
+
 }
 
 
@@ -341,8 +344,7 @@ function updateTotals() {
   const storeFilter = document.getElementById("filter-store").value;
 
   const filtered = shoppingList.filter(item => {
-    const store = item.supermarket.name;
-    return storeFilter === "all" || store === storeFilter;
+    return storeFilter === "all" || item.supermarket.name === storeFilter;
   });
 
   const total = filtered.reduce((acc, i) => {
@@ -357,9 +359,14 @@ function updateTotals() {
       return acc + price * i.quantity;
     }, 0);
 
-  totalAllEl.textContent = total.toFixed(2).replace('.', ',') + " €";
-  totalPendingEl.textContent = pending.toFixed(2).replace('.', ',') + " €";
+  // aggiorna barra premium
+  document.getElementById("total-budget").textContent =
+    "€ " + total.toFixed(2).replace('.', ',');
+
+  document.getElementById("total-remaining").textContent =
+    "€ " + pending.toFixed(2).replace('.', ',');
 }
+
 
 
 // =========================
@@ -403,4 +410,98 @@ async function clearCart() {
   renderList();
   populateStoreFilter();
   updateTotals();
+}
+document.getElementById("finalize-btn").addEventListener("click", finalizeCart);
+
+async function finalizeCart() {
+  const purchased = shoppingList.filter(i => i.checked);
+  if (purchased.length === 0) return;
+
+  // UI loading
+
+  const res = await apiFetch(`${CONFIG.API_BASE_URL}/cart/finalize`, {
+    method: "POST",
+    headers: { "Authorization": "Bearer " + token }
+  });
+
+
+  if (!res.ok) {
+    alert("Errore durante la finalizzazione");
+    return;
+  }
+
+  const data = await res.json();
+
+  // Messaggio premium
+  alert(`Hai finalizzato ${data.finalized_items} prodotti!`);
+
+  // Aggiorna UI
+  shoppingList = shoppingList.filter(i => !i.checked);
+  renderList();
+  populateStoreFilter();
+  updateTotals();
+}
+
+
+
+document.getElementById("select-all-btn").addEventListener("click", () => {
+  const statusFilter = document.getElementById("filter-status").value;
+  const storeFilter = document.getElementById("filter-store").value;
+
+  // 1. Filtra gli item visibili
+  let visibleItems = shoppingList.filter(item => {
+    // filtro stato
+    if (statusFilter === "pending" && item.checked) return false;
+    if (statusFilter === "bought" && !item.checked) return false;
+
+    // filtro negozio
+    if (storeFilter !== "all" && item.supermarket.name !== storeFilter) return false;
+
+    return true;
+  });
+
+  // 2. Controlla se sono già tutti selezionati
+  const allSelected = visibleItems.every(i => i.checked);
+
+  // 3. Applica la selezione SOLO agli item visibili
+  visibleItems.forEach(i => i.checked = !allSelected);
+
+  // 4. Aggiorna UI
+  renderList();
+  updateTotals();
+
+  // 5. Aggiorna lo stile del bottone
+  const btn = document.getElementById("select-all-btn");
+  btn.classList.toggle("active", !allSelected);
+  document.getElementById("select-all-text").textContent =
+    allSelected ? "Seleziona Tutto" : "Deseleziona Tutto";
+});
+
+
+function updateSelectAllButtonState() {
+  const statusFilter = document.getElementById("filter-status").value;
+  const storeFilter = document.getElementById("filter-store").value;
+
+  // stessi criteri di "visibile" usati nel click del bottone
+  let visibleItems = shoppingList.filter(item => {
+    if (statusFilter === "pending" && item.checked) return false;
+    if (statusFilter === "bought" && !item.checked) return false;
+    if (storeFilter !== "all" && item.supermarket.name !== storeFilter) return false;
+    return true;
+  });
+
+  const btn = document.getElementById("select-all-btn");
+  const textEl = document.getElementById("select-all-text");
+
+  if (visibleItems.length === 0) {
+    // niente da selezionare
+    btn.classList.remove("active");
+    textEl.textContent = "Seleziona Tutto";
+    return;
+  }
+
+  const allSelected = visibleItems.every(i => i.checked);
+
+  btn.classList.toggle("active", allSelected);
+  textEl.textContent = allSelected ? "Deseleziona Tutto" : "Seleziona Tutto";
 }

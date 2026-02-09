@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.database import engine, Base
-from app.routers import auth, products, supermarkets, recipes, recipe_items, cart, users
+from app.routers import (auth, products, supermarkets, recipes, recipe_items,
+                         cart, users, shopping_history)
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -41,3 +42,4 @@ app.include_router(recipes.router)
 app.include_router(recipe_items.router)
 app.include_router(cart.router)
 app.include_router(users.router)
+app.include_router(shopping_history.router)
