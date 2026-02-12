@@ -401,12 +401,13 @@ body {
   }
 
   /* CARD PREMIUM */
-  .product-card {
+.product-card {
     background: white;
     height: auto;
-    min-height: 360px;
-    padding: 20px;
-    border-radius: 20px;
+    min-height: 200px;   /* molto più compatta */
+    padding: 11px;
+    border-radius: 11px;
+
 
     /* Ombre multilivello */
     box-shadow:
@@ -434,8 +435,8 @@ body {
 
   /* Immagine premium */
   .img-wrapper {
-    height: 200px;
-    border-radius: 18px;
+    height: 110px;
+    border-radius: 11px;
     overflow: hidden;
     position: relative;
   }

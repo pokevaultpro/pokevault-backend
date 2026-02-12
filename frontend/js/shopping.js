@@ -442,40 +442,46 @@ async function finalizeCart() {
   updateTotals();
 }
 
-
-
-document.getElementById("select-all-btn").addEventListener("click", () => {
+document.getElementById("select-all-btn").addEventListener("click", async () => {
   const statusFilter = document.getElementById("filter-status").value;
   const storeFilter = document.getElementById("filter-store").value;
 
   // 1. Filtra gli item visibili
   let visibleItems = shoppingList.filter(item => {
-    // filtro stato
     if (statusFilter === "pending" && item.checked) return false;
     if (statusFilter === "bought" && !item.checked) return false;
-
-    // filtro negozio
     if (storeFilter !== "all" && item.supermarket.name !== storeFilter) return false;
-
     return true;
   });
 
   // 2. Controlla se sono già tutti selezionati
   const allSelected = visibleItems.every(i => i.checked);
 
-  // 3. Applica la selezione SOLO agli item visibili
-  visibleItems.forEach(i => i.checked = !allSelected);
+  // 3. Aggiorna backend per ogni item
+  for (const item of visibleItems) {
+    await apiFetch(`${CONFIG.API_BASE_URL}/cart/${item.id}`, {
+      method: "PUT",
+      headers: {
+        "Authorization": "Bearer " + token,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ checked: !allSelected })
+    });
+
+    item.checked = !allSelected; // aggiorna anche localmente
+  }
 
   // 4. Aggiorna UI
   renderList();
   updateTotals();
 
-  // 5. Aggiorna lo stile del bottone
+  // 5. Aggiorna bottone
   const btn = document.getElementById("select-all-btn");
   btn.classList.toggle("active", !allSelected);
   document.getElementById("select-all-text").textContent =
     allSelected ? "Seleziona Tutto" : "Deseleziona Tutto";
 });
+
 
 
 function updateSelectAllButtonState() {
