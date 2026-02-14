@@ -38,6 +38,12 @@ class Products(Base):
     supermarket = relationship("Supermarkets", back_populates="products")
     cart_items = relationship("Cart", back_populates="product")
 
+class Favorites(Base):
+    __tablename__ = 'favorites'
+
+    id = Column(Integer, primary_key=True, index=True)
+    product_id = Column(Integer, ForeignKey('products.id'))
+    owner_id = Column(Integer, ForeignKey('users.id'))
 
 class Supermarkets(Base):
     __tablename__ = 'supermarkets'

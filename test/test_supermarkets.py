@@ -51,7 +51,7 @@ def test_create_supermarket(test_supermarket):
     db = TestingSessionLocal()
     supermarket_model = db.query(Supermarkets).filter(Supermarkets.id == new_supermarket_id).first()
     assert supermarket_model is not None
-    assert supermarket_model.name == request_data['name'].strip().lower()
+    assert supermarket_model.name == request_data['name'].strip().lower().capitalize()
     assert supermarket_model.location == request_data['location']
 
 def test_create_duplicate_supermarket(test_supermarket):

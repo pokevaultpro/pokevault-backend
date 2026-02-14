@@ -1,35 +1,55 @@
     import CONFIG from "./config.js";
     import { openProductModal } from "./modal-function.js";
 
-    document.addEventListener("DOMContentLoaded", () => {
-        loadProducts();
-        updateVisibleRange();
-    });
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadProducts();
+    await loadFavorites();
+    updateVisibleRange(true);
+});
+
 
     let allProducts = [];
     let supermarkets = [];
     let currentCategory = "all";
     let currentStore = "all";
-    let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+let favorites = [];
     let visibleStart = 0;
     let visibleEnd = 0;
 
     let CARD_HEIGHT = 260; // desktop
-    let CARD_HEIGHT_MOBILE = 300; // mobile
+    let CARD_HEIGHT_MOBILE = 338; // mobile
     let BUFFER = 10; // quante card extra mostrare
     let filtered = [];
 
+async function toggleFavorite(id) {
+  if (favorites.includes(id)) {
+    // DELETE
+await apiFetch(`${CONFIG.API_BASE_URL}/favorite/${id}`, {
+  method: "DELETE",
+  headers: {
+    "Authorization": "Bearer " + localStorage.getItem("token")
+  }
+});
 
+    favorites = favorites.filter(f => f !== id);
+  } else {
+    // POST
+await apiFetch(`${CONFIG.API_BASE_URL}/favorite`, {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer " + localStorage.getItem("token"),
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ product_id: id })
+});
 
-    function toggleFavorite(id) {
-      if (favorites.includes(id)) {
-        favorites = favorites.filter(f => f !== id);
-      } else {
-        favorites.push(id);
-      }
-      localStorage.setItem("favorites", JSON.stringify(favorites));
-      renderProducts();
-    }
+    favorites.push(id);
+  }
+
+  renderProducts();
+  updateVisibleRange();
+}
+
 
     const params = new URLSearchParams(window.location.search);
     if (params.get("sale") === "1") {
@@ -40,6 +60,16 @@
         btn.classList.toggle("active", btn.dataset.cat === "sale");
       });
     }
+async function loadFavorites() {
+  const res = await apiFetch(`${CONFIG.API_BASE_URL}/favorite`, {
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem("token")
+    }
+  });
+
+  favorites = res.ok ? await res.json() : [];
+}
+
 
     async function loadProducts() {
       const [prodRes, supRes] = await Promise.all([
@@ -79,108 +109,84 @@
       renderProducts();
     }
 
-    function renderProducts() {
-      const search = document.getElementById("search-input").value.toLowerCase();
+ function renderProducts() {
+  const search = document.getElementById("search-input").value.toLowerCase();
 
-      // 1. FILTRO
-      filtered = allProducts.filter(p => {
-        const matchesSearch = p.name.toLowerCase().includes(search);
-        const matchesCategory =
-          currentCategory === "all" ||
-          (currentCategory === "sale" && p.discounted_price !== null) ||
-          (currentCategory === "favorites" && favorites.includes(p.id)) ||
-          p.category === currentCategory;
+  // 1. FILTRO
+  filtered = allProducts.filter(p => {
+    const matchesSearch = p.name.toLowerCase().includes(search);
+    const matchesCategory =
+      currentCategory === "all" ||
+      (currentCategory === "sale" && p.discounted_price !== null) ||
+      (currentCategory === "favorites" && favorites.includes(p.id)) ||
+      p.category === currentCategory;
 
-        const matchesStore =
-          currentStore === "all" ||
-          p.supermarket_id == currentStore;
+    const matchesStore =
+      currentStore === "all" ||
+      p.supermarket_id == currentStore;
 
-        return matchesSearch && matchesCategory && matchesStore;
-      });
+    return matchesSearch && matchesCategory && matchesStore;
+  });
 
-      // 2. ORDINAMENTO
-      if (currentStore === "all") {
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
-      } else {
-        filtered.sort((a, b) => {
-          const aOrder = a.aisle_order ?? 9999;
-          const bOrder = b.aisle_order ?? 9999;
-          return aOrder - bOrder;
-        });
-      }
+  // 2. ORDINAMENTO
+  if (currentStore === "all") {
+    filtered.sort((a, b) => a.name.localeCompare(b.name));
+  } else {
+    filtered.sort((a, b) => (a.aisle_order ?? 9999) - (b.aisle_order ?? 9999));
+  }
 
-      // 3. CALCOLO ALTEZZA CARD (mobile vs desktop)
-      const isMobile = window.innerWidth < 480;
-      const cardHeight = isMobile ? CARD_HEIGHT_MOBILE : CARD_HEIGHT;
-
-      // 4. ALTEZZA TOTALE DELLA LISTA
-      const totalHeight = filtered.length * cardHeight;
-
-      const container = document.getElementById("virtual-container");
-container.style.height = totalHeight + "px";
-
-      document.getElementById("spacer-top").style.height = "0px";
-      updateVisibleRange();
-    }
-
-    function updateVisibleRange() {
-  const container = document.getElementById("virtual-container");
-  if (!container) return;
-
-  const viewportHeight = window.innerHeight;
-
+  // 3. CARD HEIGHT
   const isMobile = window.innerWidth < 480;
   const cardHeight = isMobile ? CARD_HEIGHT_MOBILE : CARD_HEIGHT;
 
-  const containerTop = container.getBoundingClientRect().top;
-  const scrollTop = Math.max(0, -containerTop);
+  // 4. VIRTUAL CONTAINER HEIGHT
+  const container = document.getElementById("virtual-container");
+  container.style.height = filtered.length * cardHeight + "px";
 
-  const startIndex = Math.floor(scrollTop / cardHeight) - BUFFER;
-  const endIndex = Math.ceil((scrollTop + viewportHeight) / cardHeight) + BUFFER;
+  // 5. SPAZIO SOPRA PER STICKY
+  const sticky = document.querySelector(".sticky-header");
+  const stickyHeight = sticky ? sticky.offsetHeight : 0;
+  document.getElementById("spacer-top").style.height = stickyHeight + "px";
 
-  visibleStart = Math.max(0, startIndex);
-  visibleEnd = Math.min(filtered.length, endIndex);
+  updateVisibleRange();
+}
+
+function updateVisibleRange() {
+  const viewportHeight = window.innerHeight;
+  const isMobile = window.innerWidth < 480;
+  const cardHeight = isMobile ? CARD_HEIGHT_MOBILE : CARD_HEIGHT;
+
+  // scroll effettivo (non serve topOffset per la prima card)
+  const scrollTop = window.scrollY;
+
+  visibleStart = Math.floor(scrollTop / cardHeight);
+  visibleEnd = Math.min(
+    filtered.length,
+    Math.ceil((scrollTop + viewportHeight) / cardHeight) + BUFFER
+  );
 
   renderVirtualProducts();
 }
 
-    function renderVirtualProducts() {
-      const grid = document.getElementById("products-grid");
+function renderVirtualProducts() {
+  const grid = document.getElementById("products-grid");
+  [...grid.querySelectorAll(".product-card")].forEach(el => el.remove());
 
-      // 🔥 Cancella solo le card, NON gli spacer
-      [...grid.querySelectorAll(".product-card")].forEach(el => el.remove());
+  const isMobile = window.innerWidth < 480;
+  const cardHeight = isMobile ? CARD_HEIGHT_MOBILE : CARD_HEIGHT;
 
-      const isMobile = window.innerWidth < 480;
-      const cardHeight = isMobile ? CARD_HEIGHT_MOBILE : CARD_HEIGHT;
+  filtered.slice(visibleStart, visibleEnd).forEach((p, i) => {
+    const realIndex = visibleStart + i;
+    const card = createProductCard(p);
 
-      const spacing = isMobile ? 20 : 0;
-        grid.style.height = (filtered.length * (cardHeight + spacing)) + "px";
+    card.style.position = "absolute";
+    card.style.top = realIndex * cardHeight + "px"; // NIENTE offset sulla prima card
+    card.style.left = "0";
+    card.style.right = "0";
 
-
-      const slice = filtered.slice(visibleStart, visibleEnd);
-
-      slice.forEach((p, i) => {
-        const realIndex = visibleStart + i;
-        const card = createProductCard(p);
-
-        card.style.position = "absolute";
-
-        const spacing = isMobile ? 20 : 0; // spazio tra card su mobile
-        card.style.top = (realIndex * (cardHeight + spacing)) + "px";
-
-        card.style.left = "0";
-        card.style.right = "0";
-
-        grid.appendChild(card);
-      });
-
-      document.getElementById("spacer-top").style.height =
-        (visibleStart * cardHeight) + "px";
-
-      document.getElementById("spacer-bottom").style.height =
-        ((filtered.length - visibleEnd) * cardHeight) + "px";
-    }
-
+    grid.appendChild(card);
+  });
+}
 
 
 
@@ -333,5 +339,15 @@ container.style.height = totalHeight + "px";
 
 
 
-    window.addEventListener("scroll", updateVisibleRange);
+let ticking = false;
+
+window.addEventListener("scroll", () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      updateVisibleRange();
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
     window.addEventListener("resize", renderProducts);

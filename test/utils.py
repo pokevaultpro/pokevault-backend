@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 from app.database import Base
 from app.main import app
 from app.models import (Products, Supermarkets, Recipes, RecipeItems, Cart,
-                        Users, ShoppingHistory, ShoppingHistoryItem)
+                        Users, ShoppingHistory, ShoppingHistoryItem, Favorites)
 
 SQLALCHEMY_DATABASE_URL = "sqlite://"
 
@@ -68,6 +68,25 @@ def test_product(test_supermarket):
     yield [product1, product2, product3]
     with engine.connect() as connection:
         connection.execute(text("DELETE FROM products;"))
+        connection.commit()
+
+@pytest.fixture
+def test_favorite(test_product, test_user):
+    favorite1 = Favorites(
+        product_id=test_product[0].id,
+        owner_id=test_user[0].id,
+    )
+    favorite2 = Favorites(
+        product_id=test_product[1].id,
+        owner_id=test_user[1].id,
+    )
+    db = TestingSessionLocal()
+    db.add(favorite1)
+    db.add(favorite2)
+    db.commit()
+    yield [favorite1, favorite2]
+    with engine.connect() as connection:
+        connection.execute(text("DELETE FROM favorites;"))
         connection.commit()
 
 @pytest.fixture
