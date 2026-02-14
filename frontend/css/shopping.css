@@ -588,7 +588,7 @@ button, .shopping-item {
     min-height: 130px;
     padding: 18px 18px;
     display: grid;
-    grid-template-columns: auto auto 1fr auto; /* check | img | info | right */
+    grid-template-columns: auto 1fr auto; /* check | img | info | right */
     align-items: center;
     gap: 12px;
     border-radius: 26px;
@@ -618,13 +618,13 @@ button, .shopping-item {
 
   /* Nome su 2 righe */
   .name {
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.25;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.15;
     white-space: normal;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
   }
 
@@ -801,6 +801,14 @@ button, .shopping-item {
     gap: 2px;
     min-width: 0;
   }
+
+  .select-all-btn {
+  padding: 5px 5px;      /* ⛔ più piccolo */
+  font-size: 9px;        /* ⛔ più piccolo */
+  border-radius: 7px;    /* ⛔ più compatto */
+  max-width: 100%;        /* ⛔ non può uscire */
+}
+
 }
 
 

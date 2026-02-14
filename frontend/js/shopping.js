@@ -169,9 +169,10 @@ div.innerHTML = `
     ${item.checked ? "✔" : ""}
   </div>
 
-  <img src="${product.image}" class="item-img ${item.checked ? "bought-img" : ""}">
 
   <div class="item-info">
+    <img src="${product.image}" class="item-img ${item.checked ? "bought-img" : ""}">
+
     <div class="name ${item.checked ? "bought-text" : ""}">
       ${product.name}
       ${hasDiscount ? `<span class="sale-badge">SALE</span>` : ""}

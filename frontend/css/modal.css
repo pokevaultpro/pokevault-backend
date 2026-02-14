@@ -203,89 +203,118 @@ font-family: 'Inter', system-ui, sans-serif;
 
 @media (max-width: 480px) {
 
-  /* Modal come bottom sheet */
+  /* Modal centrato */
   .modal {
-    align-items: flex-end; /* ⛔ NON centrare più */
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important;
   }
 
+  /* Modal con dimensione variabile ma limite massimo */
   .modal-content {
-    width: 100%;
-    max-width: none;
-    border-radius: 20px 20px 0 0;
-    animation: slideUp 0.25s ease;
+    width: 80% !important;
+    max-width: 370px !important;
+
+    height: auto !important;        /* cresce se serve */
+    max-height: 55vh !important;    /* ⛔ limite massimo */
+
+    border-radius: 17px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto !important;    /* scroll SOLO se necessario */
   }
 
   /* Immagine più piccola */
   .modal-img {
-    height: 120px;
+    height: 80px !important;
+    object-fit: cover;
+  }
+
+  /* Corpo più compatto */
+  .modal-body {
+    padding: 13px !important;
   }
 
   /* Titolo più compatto */
   .modal-title {
-    font-size: 18px;
-    margin: 6px 0;
+    font-size: 16px !important;
+    margin: 8px 0 !important;
   }
 
-  /* Prezzi più piccoli */
+  /* Prezzi più compatti */
   .modal-price .final-price {
-    font-size: 18px;
+    font-size: 13px !important;
   }
 
   .modal-price .discounted {
-    font-size: 14px;
+    font-size: 10px !important;
   }
 
   /* Sezioni nutrizionali più compatte */
   .modal-sections {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 5px !important;
   }
 
   .modal-section {
-    padding: 10px;
+    padding: 6px !important;
   }
 
-  .modal-section-title {
-    font-size: 10px;
-  }
-
-  .modal-section-value {
-    font-size: 13px;
-  }
-
-  /* Nutritional grid più piccola */
-  .nutrition-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-  }
-
-  .nutri-card {
-    padding: 8px;
-  }
-
-  .nutri-label {
-    font-size: 9px;
-  }
-
-  .nutri-value {
-    font-size: 12px;
-  }
-
-  /* Bottone più compatto */
+  /* Bottone chiudi sempre visibile */
   .modal-close {
-    padding: 12px;
-    font-size: 14px;
-    border-radius: 12px;
-    margin-top: 16px;
+    padding: 12px !important;
+    font-size: 14px !important;
+    margin-top: 11px !important;
   }
 
   /* Badge sconto più piccolo */
   #modal-discount-badge {
-    font-size: 12px;
-    padding: 6px 10px;
-    top: 10px;
-    right: 10px;
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+    top: 10px !important;
+    right: 10px !important;
   }
+
+  .modal-nutrition {
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
+.nutrition-title {
+  font-size: 9px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
 
+.nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+}
+
+.nutri-card {
+  background: #f1f5f9;
+  padding: 7px;
+  border-radius: 7px;
+  text-align: center;
+}
+
+.nutri-label {
+  font-size: 7px;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+.nutri-value {
+  font-size: 11px;
+  font-weight: 550;
+  color: #0f172a;
+}
+.modal-info {
+  font-size: 10px;
+  color: #475569;
+  margin-bottom: 15px;
+}
+}

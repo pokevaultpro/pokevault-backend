@@ -36,32 +36,47 @@
   </div>
 </header>
 <div class="products-page">
-        <div class="sticky-header">
-    <h1 class="shopping-title">Prodotti</h1>
+    <div class="sticky-header">
+        <h1 class="shopping-title">Prodotti</h1>
 
-<input id="search-input" class="search-bar" type="text" placeholder="Cerca prodotti...">
-<div class="store-filter-bar">
-  <select id="store-filter" class="store-select">
-    <option value="all">Tutti i negozi</option>
-  </select>
-</div>
+        <input id="search-input" class="search-bar" type="text" placeholder="Cerca prodotti...">
 
-<div class="category-bar">
-  <button class="cat-pill active" data-cat="all">All</button>
-  <button class="cat-pill" data-cat="sale">In Sconto</button>
-  <button class="cat-pill" data-cat="Frutta">Frutta</button>
-  <button class="cat-pill" data-cat="Latticini">Latticini</button>
-  <button class="cat-pill" data-cat="Forno">Forno</button>
-  <button class="cat-pill" data-cat="Pesce">Pesce</button>
-  <button class="cat-pill" data-cat="Verdura">Verdura</button>
-  <button class="cat-pill" data-cat="Carne">Carne</button>
-  <button class="cat-pill" data-cat="Dispensa">Dispensa</button>
-</div>
+        <div class="store-filter-bar">
+            <select id="store-filter" class="store-select">
+                <option value="all">Tutti i negozi</option>
+            </select>
         </div>
 
-  <div id="products-grid" class="products-grid"></div>
+        <div class="category-bar">
+            <button class="cat-pill active" data-cat="all">All</button>
+            <button class="cat-pill" data-cat="sale">In Sconto</button>
+            <button class="cat-pill" data-cat="favorites">Preferiti</button>
 
+            <button class="cat-pill" data-cat="Frutta">Frutta</button>
+            <button class="cat-pill" data-cat="Verdura">Verdura</button>
+            <button class="cat-pill" data-cat="Dispensa">Dispensa</button>
+            <button class="cat-pill" data-cat="Pasta">Pasta</button>
+            <button class="cat-pill" data-cat="Colazione">Colazione</button>
+            <button class="cat-pill" data-cat="Bevande">Bevande</button>
+            <button class="cat-pill" data-cat="Latticini">Latticini</button>
+            <button class="cat-pill" data-cat="Forno">Forno</button>
+            <button class="cat-pill" data-cat="Pesce">Pesce</button>
+            <button class="cat-pill" data-cat="Carne">Carne</button>
+            <button class="cat-pill" data-cat="Dolci">Dolci</button>
+            <button class="cat-pill" data-cat="Igiene">Igiene</button>
+            <button class="cat-pill" data-cat="Surgelati">Surgelati</button>
+        </div>
+    </div>
+
+    <!-- 🔥 virtual scroll container CORRETTO -->
+    <div id="virtual-container" style="position: relative;">
+        <div id="products-grid" class="products-grid" style="position:absolute; top:0; left:0; width:100%;">
+            <div id="spacer-top"></div>
+            <div id="spacer-bottom"></div>
+        </div>
+    </div>
 </div>
+
 
 <div id="toast" class="toast"></div>
 
